@@ -44,6 +44,7 @@ class MyLinkedList {
         }
         return current;
     }
+
     public int getFirst(){
         return get(0);
     }
@@ -72,8 +73,39 @@ class MyLinkedList {
 
     public int popFirst(){
         return pop(0);
-
     }
+
+    /**
+     * Получение размера
+     * @return
+     */
+    public int size(){
+        int size = 0;
+        Node current = head;
+        while (current != null){
+            size++;
+            current = current.next;
+        }
+        return size;
+    }
+
+    /**
+     * Проверка наличия элемента
+     * @param value
+     * @return
+     */
+    public boolean contains(int value){
+        Node current = head;
+        while (current != null){
+            if (current.data == value){
+                return true;
+            }
+            current = current.next;
+
+        }
+        return false;
+    }
+
 
     @Override
     public String toString() {
