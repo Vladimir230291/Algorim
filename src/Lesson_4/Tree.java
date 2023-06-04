@@ -6,71 +6,75 @@ import java.util.List;
 import java.util.Queue;
 
 public class Tree<T extends Comparable<T>> {
-    private class Node {
-        private int value;
+    private class Node<T> {
+        private T value;
         Node left;
         Node right;
 
-        public Node(int value) {
+        public Node(T value) {
             this.value = value;
         }
     }
 
-    private Node root;
+    private Node<T> root;
 
-    public void add(int value) {
+    public void add(T value) {
         if (root == null) {
-            root = new Node(value);
+            root = new Node<T>(value);
             return;
         }
         add(root, value);
 
-        }
-        private void add(Node current, int value) {
-            if (value < current.value) {
-                if(current.left == null){
-                    current.left = new Node(value);
-                } else {
-                    add(current.left, value);
-                }
-                } else if (value > current.value) {
-                   if(current.right == null){
-                    current.right = new Node(value);
-                } else {
-                    add(current.right, value);
-                }
+    }
+
+    private void add(Node<T> current, T value) {
+        if (value.compareTo(current.value) < 0) {
+            if (current.left == null) {
+                current.left = new Node(value);
+            } else {
+                add(current.left, value);
+            }
+        } else if (value.compareTo(current.value) > 0) {
+            if (current.right == null) {
+                current.right = new Node(value);
+            } else {
+                add(current.right, value);
+            }
 
         }
     }
 
-    private boolean contains(int value) {
+    private boolean contains(T value) {
         return findNode(root, value) != null;
     }
-    private Node findNode(Node current, int value) {
+
+    private Node findNode(Node<T> current, T value) {
         if (current == null) {
             return null;
         }
-        if (value < current.value) {
+        if (value.compareTo(current.value) < 0) {
             return findNode(current.left, value);
-        } else if (value > current.value) {
+        } else if (value.compareTo(current.value) > 0) {
             return findNode(current.right, value);
         } else {
             return current;
         }
     }
-    public void remove(int value) {
+
+    public void remove(T value) {
         root = removeNode(root, value);
 
 
     }
-//    метод который удаляет моду и возвращает ту ноду, которая будет вместо нее
-    private Node removeNode(Node current, int value) {
+
+    //    метод который удаляет моду и возвращает ту ноду, которая будет вместо нее
+    private Node<T> removeNode(Node<T> current, T value) {
         if (current == null)
             return null;
-        if (value < current.value){
+        if (value.compareTo(current.value) < 0) {
             current.left = removeNode(current.left, value);
-            return current; 
-        } else if (value> current.value) {
+            return current;
+        } else if (value.compareTo(current.value) > 0) {
             current.right = removeNode(current.right, value);
             return current;
         }
@@ -87,36 +91,40 @@ public class Tree<T extends Comparable<T>> {
         }
 //        3.У узла два дочерних узла
 //        Ищем минимальный элемент в правом поддереве
-        Node smallestNodeOnTheRight = findFirstNode(current.right);
-        int smallestValueOnTheRight = smallestNodeOnTheRight.value;
+        Node<T> smallestNodeOnTheRight = findFirstNode(current.right);
+        T smallestValueOnTheRight = smallestNodeOnTheRight.value;
         current.value = smallestValueOnTheRight;
         current.right = removeNode(current.right, smallestValueOnTheRight);
         return current;
     }
-        private Node findFirstNode(Node current) {
-        if (current.left != null){
+
+    private Node<T> findFirstNode(Node<T> current) {
+        if (current.left != null) {
             return findFirstNode(current.left);
         }
         return current;
     }
-    public int findFirst() {
-        if (root == null){
+
+    public T findFirst() {
+        if (root == null) {
             throw new IllegalArgumentException("Список пуст");
         }
         return findFirstNode(root).value;
     }
-//    Поиск в глубину DFS
+
+    //    Поиск в глубину DFS
 //    Поиск в ширину BFS
-    public List<Integer> dfs() {
-        if (root == null){
+    public List<T> dfs() {
+        if (root == null) {
             return List.of();
         }
-        List<Integer> result = new ArrayList<>();
+        List<T> result = new ArrayList<>();
         dfs(root, result);
         return List.copyOf(result);
 
     }
-    private void dfs(Node current, List<Integer> result) {
+
+    private void dfs(Node<T> current, List<T> result) {
 //        in-order
         if (current.left != null) {
             dfs(current.left, result);
@@ -126,16 +134,17 @@ public class Tree<T extends Comparable<T>> {
             dfs(current.right, result);
         }
     }
-    public List<Integer> bfs() {
-        if (root == null){
+
+    public List<T> bfs() {
+        if (root == null) {
             return List.of();
         }
-        List<Integer> result = new ArrayList<>();
+        List<T> result = new ArrayList<>();
         Queue<Node> queue = new ArrayDeque<>();
         queue.add(root);
-        while (!queue.isEmpty()){
+        while (!queue.isEmpty()) {
             Node current = queue.poll();
-            result.add(current.value);
+            result.add((T) current.value);
             if (current.left != null) {
                 queue.add(current.left);
             }
